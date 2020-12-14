@@ -31,11 +31,11 @@ http {
     resolver 8.8.8.8;
 
     upstream web_server {
-        server covey-test.herokuapp.com:443;
+        server <%= ENV["WEB_SERVER_ENDPOINT"] %>:443;
     }
 
     upstream hfapi_server {
-        server covey-test.herokuapp.com:443;
+        server <%= ENV["HFAPI_ENDPOINT"] %>:443;
     }
 
     server {
@@ -45,19 +45,19 @@ http {
         location /api/contact/linkedin/check_handle {
             set $upstream hfapi_server;
             proxy_pass https://$upstream;
-            proxy_ssl_name covey-test.herokuapp.com;
+            proxy_ssl_name <%= ENV["HFAPI_ENDPOINT"] %>;
             proxy_set_header x-forwarded-host $host;
             proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header Host covey-test.herokuapp.com;
+            proxy_set_header Host <%= ENV["HFAPI_ENDPOINT"] %>;
         }
 
         location / {
             set $upstream web_server;
             proxy_pass https://$upstream;
-            proxy_ssl_name covey-test.herokuapp.com;
+            proxy_ssl_name <%= ENV["WEB_SERVER_ENDPOINT"] %>;
             proxy_set_header x-forwarded-host $host;
             proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header Host covey-test.herokuapp.com;
+            proxy_set_header Host <%= ENV["WEB_SERVER_ENDPOINT"] %>;
         }
     }
 }
